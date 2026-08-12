@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Focus Reader",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Read HTTPS articles one clear sentence or item at a time.",
   "icons": {
     "16": "icons/focus-reader-16.png",
