@@ -8,7 +8,6 @@ Focus Reader is a small Firefox extension that turns an HTTPS article into a cal
 2. Choose **This Firefox**.
 3. Choose **Load Temporary Add-on**.
 4. Select `manifest.json` from this folder.
-5. Disable the old Focus Reader shortcut in Michiel Dashboard while both extensions contain the reader.
 
 ## Use
 
@@ -32,6 +31,28 @@ Focus Reader shows an error for browser pages, PDF files, HTTP pages, feeds with
 1. Install dependencies with `npm install`.
 2. Run extraction tests with `npm test`.
 3. The vendored `Readability.js` comes from Mozilla Readability 0.6.0. See `vendor/README.md` and `vendor/READABILITY-LICENSE.md`.
+
+## Install a signed release in Firefox
+
+1. Open the project's **Releases** page on GitHub.
+2. Open the latest release.
+3. Download the attached `.xpi` file.
+4. Open `about:addons` in Firefox.
+5. Click the gear icon and choose **Install Add-on From File...**.
+6. Select the downloaded `.xpi`.
+
+Only install an `.xpi` attached to an official project release. The file is signed by Mozilla, so Firefox permits a permanent install.
+
+## Sign a release
+
+1. Install Mozilla's extension tool: `npm install --global web-ext`.
+2. Create Mozilla Add-ons API credentials at `https://addons.mozilla.org/developers/`.
+3. Copy `.env.sign.example` to `.env.sign` and add your AMO keys.
+4. Run `./sign-unlisted.sh`.
+5. Find the signed `.xpi` in `web-ext-artifacts/`.
+6. Attach that `.xpi` to the matching GitHub Release.
+
+The signing script submits the extension as an unlisted add-on. Mozilla signs it for direct install, but does not publish it in the add-on store.
 
 ## Chrome later
 
