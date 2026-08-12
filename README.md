@@ -1,6 +1,6 @@
 # Focus Reader
 
-Focus Reader is a small Firefox extension that turns an HTTPS article into a calm, one-item-at-a-time reader. Article text stays in the extension and is not saved or sent to a server.
+Focus Reader is a small Firefox, Chrome, and Chromium extension that turns an HTTPS article into a calm, one-item-at-a-time reader. Article text stays in the extension and is not saved or sent to a server.
 
 ## Install for local use
 
@@ -32,6 +32,24 @@ Focus Reader shows an error for browser pages, PDF files, HTTP pages, feeds with
 2. Run extraction tests with `npm test`.
 3. The vendored `Readability.js` comes from Mozilla Readability 0.6.0. See `vendor/README.md` and `vendor/READABILITY-LICENSE.md`.
 
+## Install in Chrome or Chromium
+
+1. Run `./package-chrome.sh`.
+2. Open `chrome://extensions`.
+3. Enable **Developer mode**.
+4. Choose **Load unpacked**.
+5. Select the unpacked folder printed by the script in `chrome-artifacts/`.
+
+Chrome 102 or newer is required. An unpacked extension is for local use and is not signed.
+
+## Package for the Chrome Web Store
+
+1. Run `./package-chrome.sh`.
+2. Upload the versioned `-chrome.zip` file from `chrome-artifacts/` to the Chrome Web Store developer dashboard.
+3. Google reviews, signs, and serves the extension. Later releases use a new ZIP uploaded to the same listing.
+
+The package contains only the runtime files, icons, and Readability licence. It does not contain tests, signing keys, or Firefox release files.
+
 ## Install a signed release in Firefox
 
 1. Open the project's **Releases** page on GitHub.
@@ -53,7 +71,3 @@ Only install an `.xpi` attached to an official project release. The file is sign
 6. Attach that `.xpi` to the matching GitHub Release.
 
 The signing script submits the extension as an unlisted add-on. Mozilla signs it for direct install, but does not publish it in the add-on store.
-
-## Chrome later
-
-The article extractor and reader UI do not depend on Firefox APIs. Browser calls are kept in `extension-api.js`; a Chrome release can replace the Firefox Manifest V2 injection path with Manifest V3 and `chrome.scripting` without changing the article format or UI.

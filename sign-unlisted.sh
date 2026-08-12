@@ -21,4 +21,5 @@ exec web-ext sign \
   --api-key="$WEB_EXT_API_KEY" \
   --api-secret="$WEB_EXT_API_SECRET" \
   --source-dir="$ROOT_DIR" \
-  --artifacts-dir="$ROOT_DIR/web-ext-artifacts"
+  --artifacts-dir="$ROOT_DIR/web-ext-artifacts" \
+  --ignore-files manifest.chrome.json chrome-background.js package-chrome.sh chrome-artifacts/

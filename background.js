@@ -22,14 +22,13 @@
     openPage(tab).catch((error) => console.error("Focus Reader menu action failed", error));
   });
 
-  extension.events.onMessage.addListener((message) => {
+  extension.events.onMessage.addListener(async (message) => {
     if (message?.type !== "focus-reader-get") return undefined;
-    const payload = pendingPages.get(message.token);
-    pendingPages.delete(message.token);
-    return Promise.resolve(payload || {
+    const payload = await takePendingPage(message.token);
+    return payload || {
       ok: false,
       error: "This Focus Reader session has expired. Return to the article and open it again."
-    });
+    };
   });
 
   async function ensureMenu() {
@@ -71,8 +70,15 @@
     }
 
     const token = createToken();
-    pendingPages.set(token, payload);
-    setTimeout(() => pendingPages.delete(token), SESSION_TTL_MS);
+    try {
+      await storePendingPage(token, payload);
+    } catch (error) {
+      payload = {
+        ok: false,
+        error: "This article is too large to open in Focus Reader."
+      };
+      await storePendingPage(token, payload);
+    }
     try {
       await extension.tabs.executeScript(tab.id, { file: "extension-api.js", runAt: "document_idle" });
       await extension.tabs.executeScript(tab.id, { file: "reader-overlay.js", runAt: "document_idle" });
@@ -81,7 +87,7 @@
       try {
         await extension.tabs.create({ url: `${extension.runtime.getUrl("reader.html")}?token=${encodeURIComponent(token)}` });
       } catch (fallbackError) {
-        pendingPages.delete(token);
+        await removePendingPage(token);
         console.error("Focus Reader could not open its error page", fallbackError);
       }
     }
@@ -99,5 +105,46 @@
   function createToken() {
     if (globalThis.crypto?.randomUUID) return crypto.randomUUID();
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  async function storePendingPage(token, payload) {
+    if (extension.session) {
+      await removeExpiredPages();
+      await extension.session.set({ [sessionKey(token)]: { payload, expiresAt: Date.now() + SESSION_TTL_MS } });
+      return;
+    }
+    pendingPages.set(token, payload);
+    setTimeout(() => pendingPages.delete(token), SESSION_TTL_MS);
+  }
+
+  async function takePendingPage(token) {
+    if (extension.session) {
+      const key = sessionKey(token);
+      const values = await extension.session.get(key);
+      await extension.session.remove(key);
+      const entry = values?.[key];
+      return entry && entry.expiresAt > Date.now() ? entry.payload : null;
+    }
+    const payload = pendingPages.get(token);
+    pendingPages.delete(token);
+    return payload;
+  }
+
+  async function removePendingPage(token) {
+    if (extension.session) await extension.session.remove(sessionKey(token));
+    else pendingPages.delete(token);
+  }
+
+  async function removeExpiredPages() {
+    const values = await extension.session.get(null);
+    const now = Date.now();
+    const expiredKeys = Object.entries(values || {})
+      .filter(([key, entry]) => key.startsWith("focus-reader-session-") && entry?.expiresAt <= now)
+      .map(([key]) => key);
+    if (expiredKeys.length) await extension.session.remove(expiredKeys);
+  }
+
+  function sessionKey(token) {
+    return `focus-reader-session-${token}`;
   }
 })();

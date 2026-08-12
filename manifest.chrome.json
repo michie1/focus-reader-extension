@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Focus Reader",
+  "version": "0.2.0",
+  "description": "Read HTTPS articles one clear sentence or item at a time.",
+  "minimum_chrome_version": "102",
+  "icons": {
+    "16": "icons/focus-reader-16.png",
+    "32": "icons/focus-reader-32.png",
+    "48": "icons/focus-reader-48.png",
+    "96": "icons/focus-reader-96.png",
+    "128": "icons/focus-reader-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "scripting",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "chrome-background.js"
+  },
+  "commands": {
+    "focus-current-page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Open the current article in Focus Reader"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "reader.html",
+        "reader.css",
+        "reader.js",
+        "extension-api.js"
+      ],
+      "matches": [
+        "https://*/*"
+      ]
+    }
+  ]
+}
