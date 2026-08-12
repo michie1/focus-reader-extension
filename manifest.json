@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+  "name": "Focus Reader",
+  "version": "0.1.0",
+  "description": "Read HTTPS articles one clear sentence or item at a time.",
+  "permissions": [
+    "activeTab",
+    "menus"
+  ],
+  "background": {
+    "scripts": [
+      "extension-api.js",
+      "background.js"
+    ]
+  },
+  "commands": {
+    "focus-current-page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Open the current article in Focus Reader"
+    }
+  },
+  "web_accessible_resources": [
+    "reader.html",
+    "reader.css",
+    "reader.js"
+  ],
+  "applications": {
+    "gecko": {
+      "id": "focus-reader@msvos.local",
+      "strict_min_version": "109.0"
+    }
+  }
+}

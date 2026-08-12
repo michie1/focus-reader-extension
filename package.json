@@ -1,0 +1,11 @@
+{
+  "name": "focus-reader-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test '*.spec.js'"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Focus Reader</title>
+    <link rel="stylesheet" href="reader.css">
+    <script src="extension-api.js" defer></script>
+    <script src="reader.js" defer></script>
+  </head>
+  <body>
+    <section id="loading" class="state-card">
+      <p class="eyebrow">Focus Reader</p>
+      <h1>Reading the page…</h1>
+    </section>
+
+    <section id="error-view" class="state-card" hidden>
+      <p class="eyebrow">Focus Reader</p>
+      <h1>This page could not be read.</h1>
+      <p id="error-message" class="muted"></p>
+      <button id="error-close" class="button button-primary" type="button">Close</button>
+    </section>
+
+    <section id="focus-view" class="focus-view" aria-label="Focus Reader" hidden>
+      <header class="topbar">
+        <div>
+          <p id="focus-heading" class="focus-heading"></p>
+          <p id="focus-count" class="muted"></p>
+        </div>
+        <div class="topbar-actions">
+          <button id="theme-toggle" class="button button-quiet" type="button">Theme: System</button>
+          <button id="show-full" class="button button-quiet" type="button">Full text</button>
+          <button id="exit-reader" class="button button-quiet" type="button">Exit</button>
+        </div>
+      </header>
+      <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+      <main id="focus-main" class="focus-main" tabindex="-1">
+        <div id="focus-content" class="focus-content" aria-live="polite"></div>
+      </main>
+      <nav class="focus-nav" aria-label="Focus navigation">
+        <button id="previous-item" class="button button-quiet" type="button">Back</button>
+        <button id="copy-item" class="button button-quiet" type="button">Copy</button>
+        <button id="next-item" class="button button-primary" type="button">Next</button>
+      </nav>
+    </section>
+
+    <section id="full-view" class="full-view" hidden>
+      <header class="full-header">
+        <div>
+          <p class="eyebrow">Full extracted text</p>
+          <h1 id="full-title"></h1>
+          <a id="source-link" target="_blank" rel="noopener noreferrer">Open source page</a>
+        </div>
+        <button id="back-to-focus" class="button button-primary" type="button">Back to focus</button>
+      </header>
+      <article id="full-content" class="full-content"></article>
+    </section>
+  </body>
+</html>
