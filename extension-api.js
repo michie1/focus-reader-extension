@@ -36,6 +36,7 @@
 
   root.FocusReaderApi = {
     events: {
+      onActionClicked: (api.action || api.browserAction)?.onClicked,
       onCommand: api.commands?.onCommand,
       onInstalled: api.runtime.onInstalled,
       onMenuClicked: (api.menus || api.contextMenus)?.onClicked,
@@ -45,14 +46,14 @@
       getUrl: (path) => api.runtime.getURL(path),
       sendMessage: (message) => call(api.runtime, "sendMessage", message)
     },
-    commands: {
+    commands: api.commands ? {
       getAll: () => call(api.commands, "getAll"),
       update: (details) => call(api.commands, "update", details)
-    },
-    menus: {
+    } : null,
+    menus: (api.menus || api.contextMenus) ? {
       create: (details) => (api.menus || api.contextMenus).create(details),
       remove: (id) => call(api.menus || api.contextMenus, "remove", id)
-    },
+    } : null,
     tabs: {
       create: (details) => call(api.tabs, "create", details),
       executeScript: async (tabId, details) => {

@@ -14,8 +14,10 @@ function event() {
 
 function chromeContext(overrides = {}) {
   const onMessage = event();
+  const action = { onClicked: event() };
   const contextMenus = { onClicked: event(), create() {}, remove(_id, callback) { callback(); } };
   const chrome = {
+    action,
     runtime: {
       lastError: null,
       onInstalled: event(),
@@ -47,11 +49,12 @@ function chromeContext(overrides = {}) {
   const context = vm.createContext({ chrome, globalThis: null });
   context.globalThis = context;
   vm.runInContext(source, context);
-  return { api: context.FocusReaderApi, chrome, onMessage, contextMenus };
+  return { api: context.FocusReaderApi, chrome, onMessage, action, contextMenus };
 }
 
 test("Chrome maps context menus and scripting results", async () => {
-  const { api, chrome, contextMenus } = chromeContext();
+  const { api, chrome, action, contextMenus } = chromeContext();
+  assert.equal(api.events.onActionClicked, action.onClicked);
   assert.equal(api.events.onMenuClicked, contextMenus.onClicked);
   const results = await api.tabs.executeScript(7, { file: "reader-extract.js" });
   assert.deepEqual(results, [{ ok: true }]);
@@ -75,8 +78,10 @@ test("Chrome exposes session storage", async () => {
 
 test("Firefox keeps its native promise API and menus namespace", async () => {
   const onMessage = event();
+  const browserAction = { onClicked: event() };
   const menus = { onClicked: event(), create() {}, remove: async () => {} };
   const browser = {
+    browserAction,
     runtime: { onInstalled: event(), onMessage, getURL: (path) => path, sendMessage: async () => ({ ok: true }) },
     commands: { onCommand: event(), getAll: async () => [], update: async () => {} },
     menus,
@@ -88,7 +93,28 @@ test("Firefox keeps its native promise API and menus namespace", async () => {
   const context = vm.createContext({ browser, globalThis: null });
   context.globalThis = context;
   vm.runInContext(source, context);
+  assert.equal(context.FocusReaderApi.events.onActionClicked, browserAction.onClicked);
   assert.equal(context.FocusReaderApi.events.onMessage, onMessage);
   assert.equal(context.FocusReaderApi.events.onMenuClicked, menus.onClicked);
   assert.deepEqual(await context.FocusReaderApi.tabs.executeScript(1, { file: "test.js" }), [{ ok: true }]);
+});
+
+test("Firefox Android keeps the action when commands and menus are unavailable", () => {
+  const browserAction = { onClicked: event() };
+  const browser = {
+    browserAction,
+    runtime: { onInstalled: event(), onMessage: event(), getURL: (path) => path, sendMessage: async () => ({}) },
+    tabs: {
+      create: async () => ({}), executeScript: async () => [], getCurrent: async () => ({}),
+      query: async () => [], remove: async () => {}, sendMessage: async () => ({})
+    }
+  };
+  const context = vm.createContext({ browser, globalThis: null });
+  context.globalThis = context;
+  vm.runInContext(source, context);
+  assert.equal(context.FocusReaderApi.events.onActionClicked, browserAction.onClicked);
+  assert.equal(context.FocusReaderApi.events.onCommand, undefined);
+  assert.equal(context.FocusReaderApi.events.onMenuClicked, undefined);
+  assert.equal(context.FocusReaderApi.commands, null);
+  assert.equal(context.FocusReaderApi.menus, null);
 });

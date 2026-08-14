@@ -1,0 +1,29 @@
+{
+  "slug": "michie1-focus-reader",
+  "summary": {
+    "en-US": "Stay focused while reading articles by viewing one sentence, image, or list item at a time."
+  },
+  "description": {
+    "en-US": "Focus Reader turns an HTTPS article into a calm reading view that shows one sentence, image, or list item at a time.\n\nOpen it from the toolbar, the Firefox Android Extensions menu, Ctrl+Shift+F, or the desktop page context menu. Move through the article with J, K, the arrow keys, the mouse wheel, or a swipe. Switch to Full text when you want to see the whole article, and use the theme control to suit your reading space.\n\nFocus Reader works only when you ask it to read the active page. Article text, URLs, and reading progress stay on your device and are not saved or sent to a server. No account, payment, or external service is needed."
+  },
+  "categories": {
+    "firefox": [
+      "appearance",
+      "feeds-news-blogging"
+    ]
+  },
+  "homepage": {
+    "en-US": "https://github.com/michie1/focus-reader-extension"
+  },
+  "support_url": {
+    "en-US": "https://github.com/michie1/focus-reader-extension/issues"
+  },
+  "requires_payment": false,
+  "version": {
+    "license": "MIT",
+    "release_notes": {
+      "en-US": "Adds a toolbar action on desktop and an Extensions-menu action on Firefox for Android, making Focus Reader easier to open."
+    },
+    "approval_notes": "To test on desktop, open an HTTPS article with at least a few paragraphs, then click the toolbar action, press Ctrl+Shift+F, or use the page context menu and choose Open in Focus Reader. On Firefox for Android, open the browser menu, choose Extensions, then Focus Reader. The add-on uses activeTab only after that user action and menus only for the desktop context-menu command. It checks for unsupported commands and menus APIs before using them on Android. It extracts the active article locally and keeps the result in short-lived session memory. It does not transmit or retain article text, URLs, history, reading progress, telemetry, or other user data. No account is needed.\n\nvendor/Readability.js is the unmodified Mozilla Readability 0.6.0 release: https://github.com/mozilla/readability/releases/tag/0.6.0. The linter reports two innerHTML uses in that upstream file. One restores a cached cloned document during parser retries; the other parses a noscript image in a detached element. Focus Reader does not inject Readability HTML into its UI. reader-extract.js converts the parsed DOM into text, tables, image metadata, and HTTPS-only URLs. reader.js renders text with textContent and constructs DOM nodes directly."
+  }
+}

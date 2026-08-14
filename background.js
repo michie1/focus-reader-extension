@@ -5,19 +5,23 @@
   const SESSION_TTL_MS = 60_000;
   const pendingPages = new Map();
 
-  ensureMenu().catch((error) => console.error("Failed to set up the Focus Reader menu", error));
-  ensureShortcut().catch((error) => console.error("Failed to set up the Focus Reader shortcut", error));
+  if (extension.menus) ensureMenu().catch((error) => console.error("Failed to set up the Focus Reader menu", error));
+  if (extension.commands) ensureShortcut().catch((error) => console.error("Failed to set up the Focus Reader shortcut", error));
 
   extension.events.onInstalled.addListener(() => {
-    ensureMenu().catch((error) => console.error("Failed to reset the Focus Reader menu", error));
+    if (extension.menus) ensureMenu().catch((error) => console.error("Failed to reset the Focus Reader menu", error));
   });
 
-  extension.events.onCommand.addListener((command) => {
+  extension.events.onActionClicked?.addListener((tab) => {
+    openPage(tab).catch((error) => console.error("Focus Reader action failed", error));
+  });
+
+  extension.events.onCommand?.addListener((command) => {
     if (command !== COMMAND_ID) return;
     openActivePage().catch((error) => console.error("Focus Reader shortcut failed", error));
   });
 
-  extension.events.onMenuClicked.addListener((info, tab) => {
+  extension.events.onMenuClicked?.addListener((info, tab) => {
     if (info.menuItemId !== MENU_ID) return;
     openPage(tab).catch((error) => console.error("Focus Reader menu action failed", error));
   });

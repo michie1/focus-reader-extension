@@ -17,7 +17,8 @@ if [[ -z "${WEB_EXT_API_KEY:-}" || -z "${WEB_EXT_API_SECRET:-}" ]]; then
 fi
 
 exec web-ext sign \
-  --channel=unlisted \
+  --channel=listed \
+  --amo-metadata="$ROOT_DIR/amo-metadata.json" \
   --api-key="$WEB_EXT_API_KEY" \
   --api-secret="$WEB_EXT_API_SECRET" \
   --source-dir="$ROOT_DIR" \

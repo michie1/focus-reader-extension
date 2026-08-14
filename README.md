@@ -2,6 +2,14 @@
 
 Focus Reader is a small Firefox, Chrome, and Chromium extension that turns an HTTPS article into a calm, one-item-at-a-time reader. Article text stays in the extension and is not saved or sent to a server.
 
+## Install from Firefox Add-ons
+
+1. Open the Focus Reader page on Firefox Add-ons.
+2. Choose **Add to Firefox**.
+3. Confirm the install.
+
+The store link will be added here when Mozilla publishes the first listed release.
+
 ## Install for local use
 
 1. Open `about:debugging` in Firefox.
@@ -12,12 +20,16 @@ Focus Reader is a small Firefox, Chrome, and Chromium extension that turns an HT
 ## Use
 
 1. Open an HTTPS article.
-2. Press `Ctrl+Shift+F`, or right-click the page and choose **Open in Focus Reader**.
+2. Click the Focus Reader toolbar button, press `Ctrl+Shift+F`, or right-click the page and choose **Open in Focus Reader**.
 3. Use `J`, `K`, the arrow keys, the mouse wheel, or swipe to move.
 4. Use **Full text** to see the extracted article on one page.
 5. Press `Escape` or choose **Exit** to return to the page.
 
 Focus Reader shows an error for browser pages, PDF files, HTTP pages, feeds without a clear article, and pages where it cannot find enough article text. If Firefox blocks an overlay on a built-in page, the error opens in a small extension tab instead.
+
+Firefox 140 or newer is required on desktop. Firefox 142 or newer is required on Android.
+
+On Firefox for Android, open the browser menu, choose **Extensions**, then choose **Focus Reader**.
 
 ## Privacy and permissions
 
@@ -71,3 +83,18 @@ Only install an `.xpi` attached to an official project release. The file is sign
 6. Attach that `.xpi` to the matching GitHub Release.
 
 The signing script submits the extension as an unlisted add-on. Mozilla signs it for direct install, but does not publish it in the add-on store.
+
+## Publish to Firefox Add-ons
+
+1. Create Mozilla Add-ons API credentials at `https://addons.mozilla.org/developers/`.
+2. Copy `.env.sign.example` to `.env.sign` and add your AMO keys.
+3. Update the version in `manifest.json`, `manifest.chrome.json`, `package.json`, and `package-lock.json`.
+4. Update `amo-metadata.json` when the listing or reviewer notes change.
+5. Run `./sign-listed.sh`.
+6. Check the submission in the Mozilla Add-ons Developer Hub.
+
+The listed package contains only runtime files and licenses. Mozilla reviews, signs, hosts, and updates the extension.
+
+## License
+
+Focus Reader is available under the MIT License. The vendored Mozilla Readability library remains under the Apache License 2.0; see `vendor/READABILITY-LICENSE.md`.
